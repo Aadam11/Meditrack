@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Real-Time Disease Surveillance Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --medical-gradient: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--medical-gradient);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .dashboard-mockup {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .mockup-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .mockup-content {
+            color: var(--dark);
+        }
+
+        .alert-item {
+            background: linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--danger);
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .problem-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .problem-stat {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .problem-stat:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-stat i {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        .problem-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-description {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 5rem 0;
+            background: var(--dark);
+            color: white;
+        }
+
+        .demo-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .demo-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Market Section */
+        .market {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .market-stat {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .market-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .market-visual {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Investment Section */
+        .investment {
+            padding: 5rem 0;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+        }
+
+        .funding-ask {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: #ffd700;
+        }
+
+        .funding-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .funding-phase {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .phase-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 0;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 3rem auto 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            z-index: 1000;
+            animation: bounce 2s ease-in-out infinite;
+            text-decoration: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 4rem 2rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                justify-content: center;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .funding-ask {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                MediTrack
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#market">Market</a></li>
+                <li><a href="#investment">Investment</a></li>
+            </ul>
+            <a href="#contact" class="cta-btn">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content fade-in">
+                <h1>Save Lives with Real-Time Health Surveillance</h1>
+                <p class="hero-subtitle">MediTrack connects communities, healthcare workers, and government agencies to detect and respond to disease outbreaks faster than ever before.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">200K+</div>
+                        <div class="stat-label">Lives at Risk Annually</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">774</div>
+                        <div class="stat-label">LGAs to Cover</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">220M</div>
+                        <div class="stat-label">Population Served</div>
+                    </div>
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="#demo" class="btn-primary">
+                        <i class="fas fa-play"></i>
+                        Watch Demo
+                    </a>
+                    <a href="#investment" class="btn-secondary">
+                        <i class="fas fa-chart-line"></i>
+                        View Investment
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-visual fade-in">
+                <div class="dashboard-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dot dot-red"></div>
+                        <div class="mockup-dot dot-yellow"></div>
+                        <div class="mockup-dot dot-green"></div>
+                    </div>
+                    <div class="mockup-content">
+                        <h3 style="color: var(--dark); margin-bottom: 1rem;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
+                            Active Outbreak Alert
+                        </h3>
+                        <div class="alert-item">
+                            <strong>Cholera Outbreak - Kano State</strong><br>
+                            <small>47 cases reported • 3 confirmed deaths • High priority</small>
+                        </div>
+                        <div class="alert-item">
+                            <strong>Medicine Shortage - Lagos</strong><br>
+                            <small>ORS supplies critical • 12 facilities affected</small>
+                        </div>
+                        <div class="alert-item">
+                            <strong>Diphtheria Risk - Bauchi</strong><br>
+                            <small>Vaccination drive needed • 200K children at risk</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">The Crisis We're Solving</h2>
+                <p class="section-subtitle">Every year, thousands of Nigerians die from preventable diseases because outbreaks are detected too late and responses are poorly coordinated.</p>
+            </div>
+            
+            <div class="problem-stats">
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-virus"></i>
+                    <div class="problem-number">4,000+</div>
+                    <p>Deaths from cholera in 2023 alone</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-clock"></i>
+                    <div class="problem-number">3-4 weeks</div>
+                    <p>Average outbreak detection time</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-hospital"></i>
+                    <div class="problem-number">60%</div>
+                    <p>Health facilities lacking supplies</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="problem-number">$2.1B</div>
+                    <p>Annual cost of poor health responses</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="solution">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Our Comprehensive Solution</h2>
+                <p class="section-subtitle">MediTrack is the first integrated platform that connects every stakeholder in Nigeria's health ecosystem for rapid outbreak detection and response.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Channel Reporting</h3>
+                    <p class="feature-description">Report outbreaks via mobile app, SMS, or USSD codes. Works for everyone from urban professionals to rural communities with basic phones.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Detection</h3>
+                    <p class="feature-description">Machine learning algorithms classify diseases, predict outbreak patterns, and automatically match resources with needs in real-time.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Mapping</h3>
+                    <p class="feature-description">Interactive disease heatmaps show outbreak hotspots, resource availability, and facility status across all 774 LGAs in Nigeria.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Stakeholder Integration</h3>
+                    <p class="feature-description">Connects communities, health workers, government agencies, and NGOs on one platform for coordinated emergency response.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Verified & Secure</h3>
+                    <p class="feature-description">Healthcare worker verification, anonymous reporting options, and enterprise-grade security protect sensitive health data.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p class="feature-description">Live dashboards track outbreak trends, response times, resource allocation, and population health metrics for data-driven decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">How MediTrack Saves Lives</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">From outbreak detection to containment - see how our platform transforms emergency response times from weeks to hours.</p>
+            </div>
+            
+            <div class="demo-flow">
+                <div class="demo-step fade-in">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Community Report</h3>
+                    <p class="step-description">Health worker in rural Kano reports cholera-like symptoms via SMS to MediTrack platform</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">AI Verification</h3>
+                    <p class="step-description">System flags potential outbreak, alerts nearest medical facilities for immediate verification</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Rapid Response</h3>
+                    <p class="step-description">Government officials and NGOs notified instantly, emergency resources automatically allocated</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Real-Time Tracking</h3>
+                    <p class="step-description">Live monitoring of containment efforts, medicine distribution, and recovery rates until outbreak resolved</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="font-size: 1.3rem; color: #ffd700;">Result: Outbreak contained in <strong>72 hours</strong> instead of <strong>3-4 weeks</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Section -->
+    <section id="market" class="market">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Massive Market Opportunity</h2>
+                <p class="section-subtitle">Nigeria's digital health market is projected to reach $2.3 billion by 2027, and we're positioned to capture significant market share.</p>
+            </div>
+            
+            <div class="market-grid">
+                <div class="market-content fade-in">
+                    <h3 style="font-size: 2rem; margin-bottom: 2rem; color: var(--primary);">Why Now?</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>International funding available for health tech</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="market-stats fade-in">
+                    <div class="market-stat">
+                        <div class="market-number">$2.3B</div>
+                        <p>Digital Health Market by 2027</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">220M</div>
+                        <p>Population to Serve</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">36</div>
+                        <p>States + FCT Market</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">40K+</div>
+                        <p>Health Facilities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Section -->
+    <section id="investment" class="investment">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">Investment Opportunity</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Join us in building critical health infrastructure while generating exceptional returns</p>
+            </div>
+            
+            <div class="funding-ask fade-in">$150,000</div>
+            <p style="font-size: 1.3rem; margin-bottom: 3rem;">18-month runway to scale across Nigeria</p>
+            
+            <div class="funding-breakdown">
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 1: Foundation</h3>
+                    <div class="phase-amount">$50K</div>
+                    <p>Months 1-6: MVP completion, pilot states launch, regulatory compliance</p>
+                </div>
+                
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 2: Scale</h3>
+                    <div class="phase-amount">$75K</div>
+                    <p>Months 7-12: 10-state expansion, government partnerships, team growth</p>
+                </div>
+                
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 3: National</h3>
+                    <div class="phase-amount">$25K</div>
+                    <p>Months 13-18: National deployment, international expansion planning</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem;">
+                <h3 style="color: #ffd700; font-size: 1.5rem; margin-bottom: 1rem;">Expected Returns</h3>
+                <p style="font-size: 1.2rem;">10x ROI within 3 years through government contracts and regional expansion</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">Let's Save Lives Together</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Ready to be part of Nigeria's healthcare transformation? Get in touch for a demo and investment discussion.</p>
+            </div>
+            
+            <div class="contact-info fade-in">
+                <h3 style="color: #ffd700; font-size: 1.5rem; margin-bottom: 2rem;">Contact MediTrack</h3>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>founder@meditrack.ng</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+234-XXX-XXX-XXXX</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <span>www.meditrack.ng</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Lagos, Nigeria</span>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <p style="font-style: italic; color: rgba(255,255,255,0.9);">"Technology that saves lives, one report at a time"</p>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="#demo" class="btn-primary" style="margin-right: 1rem;">
+                        <i class="fas fa-play"></i>
+                        Schedule Demo
+                    </a>
+                    <a href="#investment" class="btn-secondary">
+                        <i class="fas fa-handshake"></i>
+                        Discuss Investment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button -->
+    <a href="#contact" class="fab" title="Get Started">
+        <i class="fas fa-rocket"></i>
+    </a>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.floor(current));
+            }, 30);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(0) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Trigger counter animations when stats come into view
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    const numberElement = entry.target.querySelector('.stat-number, .problem-number, .market-number');
+                    if (numberElement) {
+                        const target = parseInt(numberElement.dataset.target || numberElement.textContent.replace(/[^0-9]/g, ''));
+                        if (target) {
+                            numberElement.dataset.target = target;
+                            animateCounter(numberElement, target);
+                            entry.target.dataset.animated = 'true';
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Set up counter targets and observe
+        document.querySelectorAll('.stat-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('200K')) el.dataset.target = 200000;
+            if (text.includes('774')) el.dataset.target = 774;
+            if (text.includes('220M')) el.dataset.target = 220000000;
+            statsObserver.observe(el.parentElement);
+        });
+
+        document.querySelectorAll('.problem-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('4,000')) el.dataset.target = 4000;
+            if (text.includes('3-4')) el.dataset.target = 3;
+            if (text.includes('60')) el.dataset.target = 60;
+            if (text.includes('2.1')) el.dataset.target = 2.1;
+            statsObserver.observe(el.parentElement);
+        });
+
+        document.querySelectorAll('.market-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('2.3')) el.dataset.target = 2.3;
+            if (text.includes('220M')) el.dataset.target = 220;
+            if (text.includes('36')) el.dataset.target = 36;
+            if (text.includes('40K')) el.dataset.target = 40;
+            statsObserver.observe(el.parentElement);
+        });
+
+        // Mobile menu toggle (if needed)
+        const mobileMenuToggle = () => {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        };
+
+        // Add mobile menu button if screen is small
+        if (window.innerWidth <= 768) {
+            const navContainer = document.querySelector('.nav-container');
+            const menuBtn = document.createElement('button');
+            menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            menuBtn.className = 'mobile-menu-btn';
+            menuBtn.style.cssText = 'background: none; border: none; color: var(--primary); font-size: 1.5rem; cursor: pointer;';
+            menuBtn.onclick = mobileMenuToggle;
+            navContainer.appendChild(menuBtn);
+        }
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+
+        // Preload critical images and animations
+        const preloadImages = () => {
+            const images = [
+                // Add any background images here
+            ];
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        };
+
+        preload<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Real-Time Disease Surveillance Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --medical-gradient: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--medical-gradient);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .dashboard-mockup {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .mockup-header {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .mockup-content {
+            color: var(--dark);
+        }
+
+        .alert-item {
+            background: linear-gradient(90deg, #fef2f2 0%, #fee2e2 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--danger);
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .problem-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .problem-stat {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .problem-stat:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-stat i {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        .problem-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-description {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 5rem 0;
+            background: var(--dark);
+            color: white;
+        }
+
+        .demo-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .demo-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Market Section */
+        .market {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .market-stat {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .market-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .market-visual {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Investment Section */
+        .investment {
+            padding: 5rem 0;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+        }
+
+        .funding-ask {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: #ffd700;
+        }
+
+        .funding-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .funding-phase {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .phase-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 5rem 0;
+            background: var(--dark);
+            color: white;
+            text-align: center;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 3rem auto 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            z-index: 1000;
+            animation: bounce 2s ease-in-out infinite;
+            text-decoration: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 4rem 2rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                justify-content: center;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .funding-ask {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                MediTrack
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#market">Market</a></li>
+                <li><a href="#investment">Investment</a></li>
+            </ul>
+            <a href="#contact" class="cta-btn">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content fade-in">
+                <h1>Save Lives with Real-Time Health Surveillance</h1>
+                <p class="hero-subtitle">MediTrack connects communities, healthcare workers, and government agencies to detect and respond to disease outbreaks faster than ever before.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">200K+</div>
+                        <div class="stat-label">Lives at Risk Annually</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">774</div>
+                        <div class="stat-label">LGAs to Cover</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">220M</div>
+                        <div class="stat-label">Population Served</div>
+                    </div>
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="#demo" class="btn-primary">
+                        <i class="fas fa-play"></i>
+                        Watch Demo
+                    </a>
+                    <a href="#investment" class="btn-secondary">
+                        <i class="fas fa-chart-line"></i>
+                        View Investment
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-visual fade-in">
+                <div class="dashboard-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dot dot-red"></div>
+                        <div class="mockup-dot dot-yellow"></div>
+                        <div class="mockup-dot dot-green"></div>
+                    </div>
+                    <div class="mockup-content">
+                        <h3 style="color: var(--dark); margin-bottom: 1rem;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
+                            Active Outbreak Alert
+                        </h3>
+                        <div class="alert-item">
+                            <strong>Cholera Outbreak - Kano State</strong><br>
+                            <small>47 cases reported • 3 confirmed deaths • High priority</small>
+                        </div>
+                        <div class="alert-item">
+                            <strong>Medicine Shortage - Lagos</strong><br>
+                            <small>ORS supplies critical • 12 facilities affected</small>
+                        </div>
+                        <div class="alert-item">
+                            <strong>Diphtheria Risk - Bauchi</strong><br>
+                            <small>Vaccination drive needed • 200K children at risk</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">The Crisis We're Solving</h2>
+                <p class="section-subtitle">Every year, thousands of Nigerians die from preventable diseases because outbreaks are detected too late and responses are poorly coordinated.</p>
+            </div>
+            
+            <div class="problem-stats">
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-virus"></i>
+                    <div class="problem-number">4,000+</div>
+                    <p>Deaths from cholera in 2023 alone</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-clock"></i>
+                    <div class="problem-number">3-4 weeks</div>
+                    <p>Average outbreak detection time</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-hospital"></i>
+                    <div class="problem-number">60%</div>
+                    <p>Health facilities lacking supplies</p>
+                </div>
+                <div class="problem-stat fade-in">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="problem-number">$2.1B</div>
+                    <p>Annual cost of poor health responses</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="solution">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Our Comprehensive Solution</h2>
+                <p class="section-subtitle">MediTrack is the first integrated platform that connects every stakeholder in Nigeria's health ecosystem for rapid outbreak detection and response.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Channel Reporting</h3>
+                    <p class="feature-description">Report outbreaks via mobile app, SMS, or USSD codes. Works for everyone from urban professionals to rural communities with basic phones.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Detection</h3>
+                    <p class="feature-description">Machine learning algorithms classify diseases, predict outbreak patterns, and automatically match resources with needs in real-time.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Mapping</h3>
+                    <p class="feature-description">Interactive disease heatmaps show outbreak hotspots, resource availability, and facility status across all 774 LGAs in Nigeria.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Stakeholder Integration</h3>
+                    <p class="feature-description">Connects communities, health workers, government agencies, and NGOs on one platform for coordinated emergency response.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Verified & Secure</h3>
+                    <p class="feature-description">Healthcare worker verification, anonymous reporting options, and enterprise-grade security protect sensitive health data.</p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p class="feature-description">Live dashboards track outbreak trends, response times, resource allocation, and population health metrics for data-driven decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">How MediTrack Saves Lives</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">From outbreak detection to containment - see how our platform transforms emergency response times from weeks to hours.</p>
+            </div>
+            
+            <div class="demo-flow">
+                <div class="demo-step fade-in">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Community Report</h3>
+                    <p class="step-description">Health worker in rural Kano reports cholera-like symptoms via SMS to MediTrack platform</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">AI Verification</h3>
+                    <p class="step-description">System flags potential outbreak, alerts nearest medical facilities for immediate verification</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Rapid Response</h3>
+                    <p class="step-description">Government officials and NGOs notified instantly, emergency resources automatically allocated</p>
+                </div>
+                
+                <div class="demo-step fade-in">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Real-Time Tracking</h3>
+                    <p class="step-description">Live monitoring of containment efforts, medicine distribution, and recovery rates until outbreak resolved</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <p style="font-size: 1.3rem; color: #ffd700;">Result: Outbreak contained in <strong>72 hours</strong> instead of <strong>3-4 weeks</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Section -->
+    <section id="market" class="market">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Massive Market Opportunity</h2>
+                <p class="section-subtitle">Nigeria's digital health market is projected to reach $2.3 billion by 2027, and we're positioned to capture significant market share.</p>
+            </div>
+            
+            <div class="market-grid">
+                <div class="market-content fade-in">
+                    <h3 style="font-size: 2rem; margin-bottom: 2rem; color: var(--primary);">Why Now?</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>International funding available for health tech</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="market-stats fade-in">
+                    <div class="market-stat">
+                        <div class="market-number">$2.3B</div>
+                        <p>Digital Health Market by 2027</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">220M</div>
+                        <p>Population to Serve</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">36</div>
+                        <p>States + FCT Market</p>
+                    </div>
+                    <div class="market-stat">
+                        <div class="market-number">40K+</div>
+                        <p>Health Facilities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Section -->
+    <section id="investment" class="investment">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">Investment Opportunity</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Join us in building critical health infrastructure while generating exceptional returns</p>
+            </div>
+            
+            <div class="funding-ask fade-in">$150,000</div>
+            <p style="font-size: 1.3rem; margin-bottom: 3rem;">18-month runway to scale across Nigeria</p>
+            
+            <div class="funding-breakdown">
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 1: Foundation</h3>
+                    <div class="phase-amount">$50K</div>
+                    <p>Months 1-6: MVP completion, pilot states launch, regulatory compliance</p>
+                </div>
+                
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 2: Scale</h3>
+                    <div class="phase-amount">$75K</div>
+                    <p>Months 7-12: 10-state expansion, government partnerships, team growth</p>
+                </div>
+                
+                <div class="funding-phase fade-in">
+                    <h3 class="phase-title">Phase 3: National</h3>
+                    <div class="phase-amount">$25K</div>
+                    <p>Months 13-18: National deployment, international expansion planning</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem;">
+                <h3 style="color: #ffd700; font-size: 1.5rem; margin-bottom: 1rem;">Expected Returns</h3>
+                <p style="font-size: 1.2rem;">10x ROI within 3 years through government contracts and regional expansion</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title" style="color: white;">Let's Save Lives Together</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Ready to be part of Nigeria's healthcare transformation? Get in touch for a demo and investment discussion.</p>
+            </div>
+            
+            <div class="contact-info fade-in">
+                <h3 style="color: #ffd700; font-size: 1.5rem; margin-bottom: 2rem;">Contact MediTrack</h3>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>founder@meditrack.ng</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+234-XXX-XXX-XXXX</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <span>www.meditrack.ng</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Lagos, Nigeria</span>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                    <p style="font-style: italic; color: rgba(255,255,255,0.9);">"Technology that saves lives, one report at a time"</p>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="#demo" class="btn-primary" style="margin-right: 1rem;">
+                        <i class="fas fa-play"></i>
+                        Schedule Demo
+                    </a>
+                    <a href="#investment" class="btn-secondary">
+                        <i class="fas fa-handshake"></i>
+                        Discuss Investment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button -->
+    <a href="#contact" class="fab" title="Get Started">
+        <i class="fas fa-rocket"></i>
+    </a>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.floor(current));
+            }, 30);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(0) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Trigger counter animations when stats come into view
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    const numberElement = entry.target.querySelector('.stat-number, .problem-number, .market-number');
+                    if (numberElement) {
+                        const target = parseInt(numberElement.dataset.target || numberElement.textContent.replace(/[^0-9]/g, ''));
+                        if (target) {
+                            numberElement.dataset.target = target;
+                            animateCounter(numberElement, target);
+                            entry.target.dataset.animated = 'true';
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Set up counter targets and observe
+        document.querySelectorAll('.stat-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('200K')) el.dataset.target = 200000;
+            if (text.includes('774')) el.dataset.target = 774;
+            if (text.includes('220M')) el.dataset.target = 220000000;
+            statsObserver.observe(el.parentElement);
+        });
+
+        document.querySelectorAll('.problem-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('4,000')) el.dataset.target = 4000;
+            if (text.includes('3-4')) el.dataset.target = 3;
+            if (text.includes('60')) el.dataset.target = 60;
+            if (text.includes('2.1')) el.dataset.target = 2.1;
+            statsObserver.observe(el.parentElement);
+        });
+
+        document.querySelectorAll('.market-number').forEach(el => {
+            const text = el.textContent;
+            if (text.includes('2.3')) el.dataset.target = 2.3;
+            if (text.includes('220M')) el.dataset.target = 220;
+            if (text.includes('36')) el.dataset.target = 36;
+            if (text.includes('40K')) el.dataset.target = 40;
+            statsObserver.observe(el.parentElement);
+        });
+
+        // Mobile menu toggle (if needed)
+        const mobileMenuToggle = () => {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        };
+
+        // Add mobile menu button if screen is small
+        if (window.innerWidth <= 768) {
+            const navContainer = document.querySelector('.nav-container');
+            const menuBtn = document.createElement('button');
+            menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            menuBtn.className = 'mobile-menu-btn';
+            menuBtn.style.cssText = 'background: none; border: none; color: var(--primary); font-size: 1.5rem; cursor: pointer;';
+            menuBtn.onclick = mobileMenuToggle;
+            navContainer.appendChild(menuBtn);
+        }
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+
+        // Preload critical images and animations
+        const preloadImages = () => {
+            const images = [
+                // Add any background images here
+            ];
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        };
+
+        preloadImages();
+    </script>
+</body>
+</html>; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>Government prioritizing digital health infrastructure</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>COVID-19 highlighted need for surveillance systems</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>Mobile penetration enables rural accessibility</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: centerImages();
+    </script>
+</body>
+</html>; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>Government prioritizing digital health infrastructure</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>COVID-19 highlighted need for surveillance systems</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+                            <i class="fas fa-check-circle" style="color: var(--accent);"></i>
+                            <span>Mobile penetration enables rural accessibility</span>
+                        </li>
+                        <li style="margin: 1rem 0; display: flex; align-items: center
