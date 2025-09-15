@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack Analytics - Disease Surveillance Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #10B981;
+            --primary-blue: #3B82F6;
+            --dark-green: #059669;
+            --light-green: #D1FAE5;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --red-500: #EF4444;
+            --red-100: #FEE2E2;
+            --yellow-500: #F59E0B;
+            --yellow-100: #FEF3C7;
+            --orange-500: #F97316;
+            --orange-100: #FFEDD5;
+            --indigo-500: #6366F1;
+            --indigo-100: #E0E7FF;
+            --purple-500: #8B5CF6;
+            --purple-100: #EDE9FE;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .analytics-header {
+            background: linear-gradient(135deg, var(--gray-900), var(--gray-800));
+            color: white;
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analytics-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(16, 185, 129, 0.1) 50%, transparent 70%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .period-btn {
+            padding: 10px 20px;
+            background: transparent;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .period-btn.active {
+            background: var(--primary-green);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .period-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        /* Key Metrics Section */
+        .metrics-section {
+            margin-bottom: 40px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .trend-positive {
+            background: var(--red-100);
+            color: var(--red-500);
+        }
+
+        .trend-negative {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .trend-neutral {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .metric-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .metric-label {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .metric-subtitle {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 40px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+            overflow: hidden;
+        }
+
+        .chart-header {
+            padding: 25px 30px 20px;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .chart-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            background: var(--gray-100);
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .chart-content {
+            padding: 30px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: var(--gray-600);
+            background: linear-gradient(135deg, var(--gray-100), var(--gray-50));
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--gray-300);
+        }
+
+        .chart-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .chart-placeholder-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .chart-placeholder-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Regional Analysis */
+        .regional-section {
+            margin-bottom: 40px;
+        }
+
+        .regional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .regional-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+            transition: transform 0.3s ease;
+        }
+
+        .regional-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .regional-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .region-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .region-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-high {
+            background: var(--red-100);
+            color: var(--red-500);
+        }
+
+        .status-medium {
+            background: var(--yellow-100);
+            color: var(--yellow-500);
+        }
+
+        .status-low {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .region-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .region-stat {
+            text-align: center;
+        }
+
+        .region-stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gray-900);
+        }
+
+        .region-stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            margin-top: 2px;
+        }
+
+        /* Response Analysis */
+        .response-section {
+            margin-bottom: 40px;
+        }
+
+        .response-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .response-timeline {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon.detection {
+            background: var(--primary-blue);
+        }
+
+        .timeline-icon.alert {
+            background: var(--yellow-500);
+        }
+
+        .timeline-icon.dispatch {
+            background: var(--orange-500);
+        }
+
+        .timeline-icon.arrival {
+            background: var(--primary-green);
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 3px;
+        }
+
+        .timeline-time {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .timeline-duration {
+            color: var(--gray-500);
+            font-size: 0.8rem;
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        /* States Leaderboard */
+        .leaderboard-section {
+            margin-bottom: 40px;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .leaderboard-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            color: white;
+            padding: 20px 25px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--gray-100);
+            transition: background 0.2s ease;
+        }
+
+        .leaderboard-item:hover {
+            background: var(--gray-50);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+            color: white;
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32, #8B4513);
+            color: white;
+        }
+
+        .rank-other {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-state {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 3px;
+        }
+
+        .leaderboard-metric {
+            color: var(--gray-600);
+            font-size: 0.85rem;
+        }
+
+        .leaderboard-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        /* AI Predictions */
+        .ai-section {
+            margin-bottom: 40px;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .ai-card {
+            background: linear-gradient(135deg, var(--indigo-500), var(--purple-500));
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .ai-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .ai-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .ai-prediction {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .ai-confidence {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Impact Summary */
+        .impact-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .impact-title {
+            font-size: 2rem;
+            color: var(--gray-900);
+            margin-bottom: 20px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .impact-item {
+            text-align: center;
+        }
+
+        .impact-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+            margin-bottom: 8px;
+        }
+
+        .impact-label {
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .section-action {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: var(--light-green);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .section-action:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .response-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .analytics-header {
+                padding: 30px 0;
+            }
+
+            .header-content h1 {
+                font-size: 2rem;
+            }
+
+            .header-content p {
+                font-size: 1rem;
+            }
+
+            .period-selector {
+                flex-direction: column;
+                max-width: 200px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-number {
+                font-size: 2.5rem;
+            }
+
+            .regional-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 20px 0;
+            }
+
+            .metric-card {
+                padding: 20px;
+            }
+
+            .chart-content {
+                padding: 20px;
+                height: 250px;
+            }
+
+            .impact-section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Analytics Header -->
+    <header class="analytics-header">
+        <div class="container">
+            <div class="header-content">
+                <h1>📊 Disease Surveillance Analytics</h1>
+                <p>Advanced intelligence and predictive insights for Nigeria's health surveillance</p>
+                
+                <div class="period-selector">
+                    <button class="period-btn" data-period="7d">7 Days</button>
+                    <button class="period-btn active" data-period="30d">30 Days</button>
+                    <button class="period-btn" data-period="90d">90 Days</button>
+                    <button class="period-btn" data-period="1y">1 Year</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Analytics Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Key Metrics Section -->
+            <section class="metrics-section">
+                <div class="section-header">
+                    <h2 class="section-title">📈 Key Performance Indicators</h2>
+                    <a href="#export" class="section-action">Export Data</a>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-icon">📋</div>
+                            <div class="metric-trend trend-positive">↗ +18%</div>
+                        </div>
+                        <div class="metric-number" data-target="24562">0</div>
+                        <div class="metric-label">Total Reports</div>
+                        <div class="metric-subtitle">Since platform launch</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-icon">❤️</div>
+                            <div class="metric-trend trend-positive">↗ +2,340</div>
+                        </div>
+                        <div class="metric-number" data-target="247000">0</div>
+                        <div class="metric-label">Lives Saved</div>
+                        <div class="metric-subtitle">Through early intervention</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-icon">⏱️</div>
+                            <div class="metric-trend trend-negative">↘ -0.3h</div>
+                        </div>
+                        <div class="metric-number" data-target="4.2">0</div>
+                        <div class="metric-label">Response Time (Hours)</div>
+                        <div class="metric-subtitle">Average detection to deployment</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <div class="metric-icon">🛡️</div>
+                            <div class="metric-trend trend-positive">↗ +3%</div>
+                        </div>
+                        <div class="metric-number" data-target="87">0</div>
+                        <div class="metric-label">Prevention Rate (%)</div>
+                        <div class="metric-subtitle">Outbreaks prevented vs detected</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Disease Trends Chart -->
+            <section class="charts-section">
+                <div class="section-header">
+                    <h2 class="section-title">📈 Disease Trends Analysis</h2>
+                    <a href="#detailed-charts" class="section-action">View Details</a>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Disease Outbreak Trends</h3>
+                            <div class="chart-filter">
+                                <button class="filter-btn active">Cholera</button>
+                                <button class="filter-btn">Malaria</button>
+                                <button class="filter-btn">Typhoid</button>
+                                <button class="filter-btn">All</button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <div class="chart-placeholder">
+                                <div class="chart-placeholder-icon">📊</div>
+                                <div class="chart-placeholder-title">Interactive Trends Chart</div>
+                                <div class="chart-placeholder-subtitle">
+                                    Disease outbreak patterns over time<br>
+                                    • Seasonal variations<br>
+                                    • Geographic hotspots<br>
+                                    • Prediction models
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Top Diseases</h3>
+                        </div>
+                        <div class="chart-content">
+                            <div class="chart-placeholder">
+                                <div class="chart-placeholder-icon">🥧</div>
+                                <div class="chart-placeholder-title">Disease Distribution</div>
+                                <div class="chart-placeholder-subtitle">
+                                    Most reported diseases<br>
+                                    • Cholera: 34%<br>
+                                    • Malaria: 28%<br>
+                                    • Typhoid: 21%<br>
+                                    • Others: 17%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Regional Analysis -->
+            <section class="regional-section">
+                <div class="section-header">
+                    <h2 class="section-title">🗺️ Regional Disease Distribution</h2>
+                    <a href="#regional-map" class="section-action">Interactive Map</a>
+                </div>
+
+                <div class="regional-grid">
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">🌍 North Central</h3>
+                            <span class="region-status status-medium">Medium Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">1,247</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">94%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">6</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">🏞️ North East</h3>
+                            <span class="region-status status-high">High Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">1,893</div>
+                                <div class="region-stat-label">Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">6.1h</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">78%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">6</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">🌴 South South</h3>
+                            <span class="region-status status-medium">Medium Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">1,124</div>
+                                <div class="region-stat-label">Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">4.3h</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">86%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">6</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">⛰️ South East</h3>
+                            <span class="region-status status-low">Low Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">672</div>
+                                <div class="region-stat-label">Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">3.1h</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">92%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">5</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Response Time Analysis -->
+            <section class="response-section">
+                <div class="section-header">
+                    <h2 class="section-title">⚡ Response Time Breakdown</h2>
+                    <a href="#response-optimization" class="section-action">Optimize Process</a>
+                </div>
+
+                <div class="response-grid">
+                    <div class="response-timeline">
+                        <h3 style="margin-bottom: 20px; color: var(--gray-900); font-weight: 600;">Average Response Pipeline</h3>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon detection">🔍</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Pattern Detection</div>
+                                <div class="timeline-time">AI analysis of incoming reports</div>
+                            </div>
+                            <div class="timeline-duration">1.2h</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon alert">🚨</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Authority Alert</div>
+                                <div class="timeline-time">Notification to health officials</div>
+                            </div>
+                            <div class="timeline-duration">0.3h</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon dispatch">🚑</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Team Dispatch</div>
+                                <div class="timeline-time">Response team mobilization</div>
+                            </div>
+                            <div class="timeline-duration">1.4h</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-icon arrival">🏥</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">On-Site Arrival</div>
+                                <div class="timeline-time">Team reaches outbreak location</div>
+                            </div>
+                            <div class="timeline-duration">1.3h</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Response Time Trends</h3>
+                        </div>
+                        <div class="chart-content">
+                            <div class="chart-placeholder">
+                                <div class="chart-placeholder-icon">⏱️</div>
+                                <div class="chart-placeholder-title">Response Time Analysis</div>
+                                <div class="chart-placeholder-subtitle">
+                                    Performance over time<br>
+                                    • Target: 4 hours<br>
+                                    • Current: 4.2 hours<br>
+                                    • Best: 2.1 hours<br>
+                                    • Improvement: -0.3h/month
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Top Performing States -->
+            <section class="leaderboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">🏆 State Performance Leaderboard</h2>
+                    <a href="#state-rankings" class="section-action">Full Rankings</a>
+                </div>
+
+                <div class="leaderboard">
+                    <div class="leaderboard-header">
+                        States Ranked by Prevention Score (Response Time + Case Prevention + Community Engagement)
+                    </div>
+                    
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank rank-1">1</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-state">Kano State</div>
+                            <div class="leaderboard-metric">2.1h avg response • 96% prevention rate • 8,234 reports</div>
+                        </div>
+                        <div class="leaderboard-score">94.2</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank rank-2">2</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-state">FCT (Abuja)</div>
+                            <div class="leaderboard-metric">2.3h avg response • 95% prevention rate • 3,567 reports</div>
+                        </div>
+                        <div class="leaderboard-score">92.8</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank rank-3">3</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-state">Rivers State</div>
+                            <div class="leaderboard-metric">2.8h avg response • 94% prevention rate • 2,145 reports</div>
+                        </div>
+                        <div class="leaderboard-score">90.1</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank rank-other">4</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-state">Ogun State</div>
+                            <div class="leaderboard-metric">3.1h avg response • 92% prevention rate • 1,892 reports</div>
+                        </div>
+                        <div class="leaderboard-score">88.7</div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank rank-other">5</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-state">Kaduna State</div>
+                            <div class="leaderboard-metric">3.4h avg response • 90% prevention rate • 2,567 reports</div>
+                        </div>
+                        <div class="leaderboard-score">86.3</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Predictions -->
+            <section class="ai-section">
+                <div class="section-header">
+                    <h2 class="section-title">🤖 AI Predictions & Insights</h2>
+                    <a href="#ai-models" class="section-action">Model Details</a>
+                </div>
+
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <div class="ai-icon">🔮</div>
+                        <h3 class="ai-title">Cholera Season Forecast</h3>
+                        <p class="ai-prediction">
+                            High probability of cholera outbreaks in Northern Nigeria during rainy season (May-September). 
+                            Predicted hotspots: Kano, Kaduna, Bauchi, Gombe.
+                        </p>
+                        <div class="ai-confidence">87% Confidence</div>
+                    </div>
+
+                    <div class="ai-card">
+                        <div class="ai-icon">📊</div>
+                        <h3 class="ai-title">Resource Optimization</h3>
+                        <p class="ai-prediction">
+                            Recommend repositioning 2 response teams from South-East to North-West region. 
+                            Expected 23% reduction in average response time.
+                        </p>
+                        <div class="ai-confidence">92% Confidence</div>
+                    </div>
+
+                    <div class="ai-card">
+                        <div class="ai-icon">⚠️</div>
+                        <h3 class="ai-title">Early Warning Alert</h3>
+                        <p class="ai-prediction">
+                            Unusual reporting patterns detected in Sokoto State suggesting possible meningitis 
+                            outbreak. Recommend immediate investigation.
+                        </p>
+                        <div class="ai-confidence">78% Confidence</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Impact Summary -->
+            <section class="impact-section">
+                <h2 class="impact-title">🎯 Platform Impact Summary</h2>
+                <p style="color: var(--gray-600); font-size: 1.1rem; margin-bottom: 30px;">
+                    Quantifiable health and economic benefits since MediTrack deployment
+                </p>
+
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <div class="impact-number" data-target="247000">0</div>
+                        <div class="impact-label">Lives Saved</div>
+                    </div>
+                    
+                    <div class="impact-item">
+                        <div class="impact-number" data-target="156">0</div>
+                        <div class="impact-label">Outbreaks Prevented</div>
+                    </div>
+                    
+                    <div class="impact-item">
+                        <div class="impact-number" data-target="89">0</div>
+                        <div class="impact-label">Health Facilities Supported</div>
+                    </div>
+                    
+                    <div class="impact-item">
+                        <div class="impact-number">₦12.4B</div>
+                        <div class="impact-label">Healthcare Cost Savings</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--gray-200);">
+                    <p style="color: var(--gray-600); font-style: italic;">
+                        "MediTrack has revolutionized our disease surveillance capabilities, enabling us to protect 
+                        Nigerian communities with unprecedented speed and accuracy." - Dr. Ifedayo Adetifa, NCDC Director
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Period selector functionality
+        const periodButtons = document.querySelectorAll('.period-btn');
+        
+        periodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                periodButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Simulate data refresh
+                refreshAnalyticsData(button.dataset.period);
+            });
+        });
+
+        function refreshAnalyticsData(period) {
+            console.log(`Refreshing analytics data for period: ${period}`);
+            
+            // Add subtle loading effect
+            document.querySelectorAll('.metric-number').forEach(metric => {
+                metric.style.opacity = '0.5';
+                setTimeout(() => {
+                    metric.style.opacity = '1';
+                }, 300);
+            });
+
+            // Simulate different data based on period
+            const periodMultipliers = {
+                '7d': 0.1,
+                '30d': 1,
+                '90d': 3.2,
+                '1y': 12.5
+            };
+
+            const multiplier = periodMultipliers[period] || 1;
+            
+            // Update some metrics based on period (simulation)
+            setTimeout(() => {
+                updateMetrics(multiplier);
+            }, 300);
+        }
+
+        function updateMetrics(multiplier) {
+            const baseValues = {
+                reports: 24562,
+                lives: 247000,
+                responseTime: 4.2,
+                prevention: 87
+            };
+
+            // Simulate realistic changes based on time period
+            document.querySelector('[data-target="24562"]').textContent = 
+                Math.floor(baseValues.reports * Math.min(multiplier, 1)).toLocaleString();
+                
+            // Lives saved would be cumulative, so it increases with longer periods
+            document.querySelector('[data-target="247000"]').textContent = 
+                Math.floor(baseValues.lives * Math.sqrt(multiplier)).toLocaleString();
+        }
+
+        // Counter animation for metrics
+        function animateCounter(element, target, duration = 2000) {
+            const startValue = 0;
+            const increment = target / (duration / 16);
+            let current = startValue;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    if (target < 10) {
+                        element.textContent = target.toFixed(1);
+                    } else {
+                        element.textContent = target.toLocaleString();
+                    }
+                    clearInterval(timer);
+                } else {
+                    if (target < 10) {
+                        element.textContent = current.toFixed(1);
+                    } else {
+                        element.textContent = Math.floor(current).toLocaleString();
+                    }
+                }
+            }, 16);
+        }
+
+        // Intersection Observer for counter animations
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('[data-target]');
+                    counters.forEach(counter => {
+                        const target = parseFloat(counter.getAttribute('data-target'));
+                        animateCounter(counter, target);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe metric sections
+        const metricsSection = document.querySelector('.metrics-section');
+        const impactSection = document.querySelector('.impact-section');
+        
+        if (metricsSection) observer.observe(metricsSection);
+        if (impactSection) observer.observe(impactSection);
+
+        // Chart filter functionality
+        document.querySelectorAll('.chart-filter .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from siblings
+                btn.parentNode.querySelectorAll('.filter-btn').forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+                
+                // Add active to clicked button
+                btn.classList.add('active');
+                
+                // Simulate chart update
+                const chartContent = btn.closest('.chart-card').querySelector('.chart-placeholder-subtitle');
+                if (chartContent && btn.textContent !== 'All') {
+                    chartContent.innerHTML = `
+                        ${btn.textContent} outbreak analysis<br>
+                        • Seasonal patterns<br>
+                        • Geographic hotspots<br>
+                        • Risk predictions
+                    `;
+                }
+            });
+        });
+
+        // Regional card hover effects
+        document.querySelectorAll('.regional-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+                card.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.12)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.08)';
+            });
+        });
+
+        // AI card interactions
+        document.querySelectorAll('.ai-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const title = card.querySelector('.ai-title').textContent;
+                const prediction = card.querySelector('.ai-prediction').textContent;
+                const confidence = card.querySelector('.ai-confidence').textContent;
+                
+                alert(`AI Insight Details:\n\n${title}\n\n${prediction}\n\nModel ${confidence}`);
+            });
+        });
+
+        // Leaderboard interactions
+        document.querySelectorAll('.leaderboard-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const state = item.querySelector('.leaderboard-state').textContent;
+                const metrics = item.querySelector('.leaderboard-metric').textContent;
+                const score = item.querySelector('.leaderboard-score').textContent;
+                
+                alert(`${state} Performance Details:\n\n${metrics}\n\nOverall Score: ${score}/100`);
+            });
+        });
+
+        // Export functionality simulation
+        document.querySelector('[href="#export"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Exporting analytics data...\n\n• PDF Report\n• Excel Spreadsheet\n• Raw CSV Data\n\nFiles will be downloaded shortly.');
+        });
+
+        // Responsive chart handling
+        function handleChartResize() {
+            const charts = document.querySelectorAll('.chart-content');
+            charts.forEach(chart => {
+                if (window.innerWidth < 768) {
+                    chart.style.height = '250px';
+                } else {
+                    chart.style.height = '350px';
+                }
+            });
+        }
+
+        window.addEventListener('resize', handleChartResize);
+        handleChartResize(); // Call once on load
+
+        // Simulate real-time data updates
+        function simulateRealTimeUpdates() {
+            setInterval(() => {
+                // Randomly update one of the metrics slightly
+                const metrics = document.querySelectorAll('.metric-number');
+                if (metrics.length > 0) {
+                    const randomMetric = metrics[Math.floor(Math.random() * metrics.length)];
+                    const currentValue = parseInt(randomMetric.textContent.replace(/,/g, ''));
+                    const change = Math.floor(Math.random() * 10) - 5; // -5 to +5
+                    const newValue = Math.max(0, currentValue + change);
+                    
+                    // Subtle highlight animation
+                    randomMetric.style.color = 'var(--primary-green)';
+                    randomMetric.style.transform = 'scale(1.05)';
+                    
+                    setTimeout(() => {
+                        randomMetric.textContent = newValue.toLocaleString();
+                        randomMetric.style.color = 'var(--gray-900)';
+                        randomMetric.style.transform = 'scale(1)';
+                    }, 200);
+                }
+            }, 30000); // Update every 30 seconds
+        }
+
+        // Initialize real-time updates
+        simulateRealTimeUpdates();
+
+        // Add loading states for interactive elements
+        document.querySelectorAll('.section-action').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Add loading state
+                const originalText = link.textContent;
+                link.textContent = 'Loading...';
+                link.style.opacity = '0.7';
+                
+                // Restore after 1 second
+                setTimeout(() => {
+                    link.textContent = originalText;
+                    link.style.opacity = '1';
+                    
+                    // Simulate navigation or modal
+                    alert(`Opening ${originalText.toLowerCase()} interface...`);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">3.8h</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">89%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">7</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">🏔️ North West</h3>
+                            <span class="region-status status-high">High Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">2,156</div>
+                                <div class="region-stat-label">Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">5.2h</div>
+                                <div class="region-stat-label">Avg Response</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">82%</div>
+                                <div class="region-stat-label">Prevention Rate</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">7</div>
+                                <div class="region-stat-label">States</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="regional-card">
+                        <div class="regional-header">
+                            <h3 class="region-name">🌊 South West</h3>
+                            <span class="region-status status-low">Low Risk</span>
+                        </div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <div class="region-stat-number">845</div>
+                                <div class="region-stat-label">Total Cases</div>
+                            </div>
+                            <div class="region-stat">
+                                <div class="region-stat-number">2.9h</div>
+                                <div class="region-stat-label">

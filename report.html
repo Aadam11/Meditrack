@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Report Outbreak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #10B981;
+            --primary-blue: #3B82F6;
+            --dark-green: #059669;
+            --light-green: #D1FAE5;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --red-500: #EF4444;
+            --red-100: #FEE2E2;
+            --yellow-500: #F59E0B;
+            --yellow-100: #FEF3C7;
+            --orange-500: #F97316;
+            --orange-100: #FFEDD5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* Emergency Banner */
+        .emergency-banner {
+            background: linear-gradient(135deg, var(--red-500), #DC2626);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .emergency-banner h2 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .hotline-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .hotline-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: white;
+            margin: 20px 0;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-100);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: var(--gray-50);
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subtitle {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        /* Disease Selection Grid */
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .disease-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-height: 80px;
+            justify-content: center;
+        }
+
+        .disease-btn:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .disease-btn.selected {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        .disease-icon {
+            font-size: 1.8rem;
+        }
+
+        .disease-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Location Section */
+        .location-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 1rem;
+        }
+
+        .form-input, .form-select {
+            padding: 14px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            appearance: none;
+            padding-right: 40px;
+        }
+
+        /* Symptoms Grid */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+        }
+
+        .symptom-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .symptom-toggle:hover {
+            border-color: var(--primary-green);
+            background: var(--gray-50);
+        }
+
+        .symptom-toggle.selected {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+            color: var(--dark-green);
+        }
+
+        .symptom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .symptom-toggle.selected .symptom-checkbox {
+            background: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .symptom-toggle.selected .symptom-checkbox::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .symptom-name {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        /* Urgency Selector */
+        .urgency-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .urgency-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .urgency-option:hover {
+            border-color: var(--primary-green);
+            background: var(--gray-50);
+        }
+
+        .urgency-option.selected {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+
+        .urgency-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .urgency-low .urgency-indicator {
+            background: var(--primary-green);
+        }
+
+        .urgency-medium .urgency-indicator {
+            background: var(--yellow-500);
+        }
+
+        .urgency-high .urgency-indicator {
+            background: var(--red-500);
+        }
+
+        .urgency-content {
+            flex: 1;
+        }
+
+        .urgency-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .urgency-description {
+            color: var(--gray-600);
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        /* Text Area */
+        .form-textarea {
+            padding: 14px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Photo Upload */
+        .upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-green);
+            background: var(--light-green);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .upload-text {
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .uploaded-files {
+            margin-top: 15px;
+        }
+
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-remove {
+            color: var(--red-500);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            padding: 30px 20px;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            position: sticky;
+            bottom: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--gray-400);
+            cursor: not-allowed;
+        }
+
+        .submit-note {
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        /* Alternative Methods */
+        .alt-methods {
+            background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
+            color: white;
+            margin: 20px 0;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .alt-methods h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .alt-methods-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .alt-method {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .alt-method:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .alt-method-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .alt-method-content {
+            flex: 1;
+        }
+
+        .alt-method-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .alt-method-subtitle {
+            opacity: 0.8;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .disease-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .symptoms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hotline-numbers {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .section-content {
+                padding: 15px;
+            }
+        }
+
+        /* Form Validation */
+        .form-input.error, .form-select.error, .form-textarea.error {
+            border-color: var(--red-500);
+        }
+
+        .error-message {
+            color: var(--red-500);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Loading State */
+        .loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+        <h2>🚨 EMERGENCY OUTBREAK REPORTING</h2>
+        <div class="hotline-numbers">
+            <div class="hotline-item">📞 NCDC: 0800-9700-0010</div>
+            <div class="hotline-item">🏥 Emergency: 199</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Report Disease Outbreak</h1>
+        <p>Help protect your community by reporting disease symptoms quickly</p>
+    </div>
+
+    <!-- Main Form -->
+    <div class="container">
+        <form id="outbreakForm">
+            <!-- Disease Selection -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        🦠 Disease Type
+                    </h2>
+                    <p class="section-subtitle">Select the disease or symptoms you're reporting</p>
+                </div>
+                <div class="section-content">
+                    <div class="disease-grid">
+                        <div class="disease-btn" data-disease="cholera">
+                            <div class="disease-icon">💧</div>
+                            <div class="disease-name">Cholera</div>
+                        </div>
+                        <div class="disease-btn" data-disease="malaria">
+                            <div class="disease-icon">🦟</div>
+                            <div class="disease-name">Malaria</div>
+                        </div>
+                        <div class="disease-btn" data-disease="typhoid">
+                            <div class="disease-icon">🤒</div>
+                            <div class="disease-name">Typhoid</div>
+                        </div>
+                        <div class="disease-btn" data-disease="meningitis">
+                            <div class="disease-icon">🧠</div>
+                            <div class="disease-name">Meningitis</div>
+                        </div>
+                        <div class="disease-btn" data-disease="lassa">
+                            <div class="disease-icon">🐭</div>
+                            <div class="disease-name">Lassa Fever</div>
+                        </div>
+                        <div class="disease-btn" data-disease="yellow-fever">
+                            <div class="disease-icon">🟡</div>
+                            <div class="disease-name">Yellow Fever</div>
+                        </div>
+                        <div class="disease-btn" data-disease="hepatitis">
+                            <div class="disease-icon">🔶</div>
+                            <div class="disease-name">Hepatitis</div>
+                        </div>
+                        <div class="disease-btn" data-disease="other">
+                            <div class="disease-icon">❓</div>
+                            <div class="disease-name">Other/Unknown</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        📍 Location
+                    </h2>
+                    <p class="section-subtitle">Where is this outbreak occurring?</p>
+                </div>
+                <div class="section-content">
+                    <div class="location-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="state">State</label>
+                            <select class="form-select" id="state" name="state" required>
+                                <option value="">Select your state</option>
+                                <option value="abia">Abia</option>
+                                <option value="adamawa">Adamawa</option>
+                                <option value="akwa-ibom">Akwa Ibom</option>
+                                <option value="anambra">Anambra</option>
+                                <option value="bauchi">Bauchi</option>
+                                <option value="bayelsa">Bayelsa</option>
+                                <option value="benue">Benue</option>
+                                <option value="borno">Borno</option>
+                                <option value="cross-river">Cross River</option>
+                                <option value="delta">Delta</option>
+                                <option value="ebonyi">Ebonyi</option>
+                                <option value="edo">Edo</option>
+                                <option value="ekiti">Ekiti</option>
+                                <option value="enugu">Enugu</option>
+                                <option value="fct">FCT (Abuja)</option>
+                                <option value="gombe">Gombe</option>
+                                <option value="imo">Imo</option>
+                                <option value="jigawa">Jigawa</option>
+                                <option value="kaduna">Kaduna</option>
+                                <option value="kano">Kano</option>
+                                <option value="katsina">Katsina</option>
+                                <option value="kebbi">Kebbi</option>
+                                <option value="kogi">Kogi</option>
+                                <option value="kwara">Kwara</option>
+                                <option value="lagos">Lagos</option>
+                                <option value="nasarawa">Nasarawa</option>
+                                <option value="niger">Niger</option>
+                                <option value="ogun">Ogun</option>
+                                <option value="ondo">Ondo</option>
+                                <option value="osun">Osun</option>
+                                <option value="oyo">Oyo</option>
+                                <option value="plateau">Plateau</option>
+                                <option value="rivers">Rivers</option>
+                                <option value="sokoto">Sokoto</option>
+                                <option value="taraba">Taraba</option>
+                                <option value="yobe">Yobe</option>
+                                <option value="zamfara">Zamfara</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="lga">Local Government Area (LGA)</label>
+                            <input type="text" class="form-input" id="lga" name="lga" placeholder="e.g., Ikeja, Garki, Victoria Island" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptoms -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        🩺 Symptoms
+                    </h2>
+                    <p class="section-subtitle">Select all symptoms being reported</p>
+                </div>
+                <div class="section-content">
+                    <div class="symptoms-grid">
+                        <div class="symptom-toggle" data-symptom="fever">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">High Fever</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="vomiting">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Vomiting</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="diarrhea">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Diarrhea</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="headache">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Severe Headache</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="weakness">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Weakness</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="dehydration">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Dehydration</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="rash">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Skin Rash</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="bleeding">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Bleeding</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="jaundice">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Jaundice</div>
+                        </div>
+                        <div class="symptom-toggle" data-symptom="confusion">
+                            <div class="symptom-checkbox"></div>
+                            <div class="symptom-name">Confusion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Urgency Level -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        ⚡ Urgency Level
+                    </h2>
+                    <p class="section-subtitle">How urgent is this situation?</p>
+                </div>
+                <div class="section-content">
+                    <div class="urgency-options">
+                        <div class="urgency-option urgency-high" data-urgency="high">
+                            <div class="urgency-indicator"></div>
+                            <div class="urgency-content">
+                                <div class="urgency-title">🚨 HIGH PRIORITY</div>
+                                <div class="urgency-description">Severe symptoms, multiple cases, immediate response needed</div>
+                            </div>
+                        </div>
+                        <div class="urgency-option urgency-medium" data-urgency="medium">
+                            <div class="urgency-indicator"></div>
+                            <div class="urgency-content">
+                                <div class="urgency-title">⚠️ MEDIUM PRIORITY</div>
+                                <div class="urgency-description">Concerning symptoms, few cases, monitoring required</div>
+                            </div>
+                        </div>
+                        <div class="urgency-option urgency-low" data-urgency="low">
+                            <div class="urgency-indicator"></div>
+                            <div class="urgency-content">
+                                <div class="urgency-title">ℹ️ LOW PRIORITY</div>
+                                <div class="urgency-description">Mild symptoms, isolated case, routine surveillance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        📝 Additional Details
+                    </h2>
+                    <p class="section-subtitle">Provide any additional information about the outbreak</p>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label class="form-label" for="description">Description</label>
+                        <textarea class="form-textarea" id="description" name="description" 
+                                  placeholder="Describe the situation, number of people affected, when symptoms started, any suspected causes..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        📞 Contact Information
+                    </h2>
+                    <p class="section-subtitle">How can health authorities reach you?</p>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="phone" name="phone" 
+                               placeholder="+234 XXX XXX XXXX" pattern="[+]?[0-9\s\-]+" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="form-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        📸 Photos (Optional)
+                    </h2>
+                    <p class="section-subtitle">Upload photos of symptoms, affected areas, or conditions</p>
+                </div>
+                <div class="section-content">
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                        <span class="upload-icon">📷</span>
+                        <div class="upload-text">Tap to add photos</div>
+                        <div class="upload-subtext">JPG, PNG up to 5MB each</div>
+                    </div>
+                    <div class="uploaded-files" id="uploadedFiles"></div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    🚀 Submit Report
+                </button>
+                <p class="submit-note">
+                    Your report will be sent to health authorities immediately. Keep your phone on for follow-up.
+                </p>
+            </div>
+        </form>
+
+        <!-- Alternative Reporting Methods -->
+        <div class="alt-methods">
+            <h3>📱 Other Ways to Report</h3>
+            <div class="alt-methods-grid">
+                <a href="sms:32543" class="alt-method">
+                    <div class="alt-method-icon">💬</div>
+                    <div class="alt-method-content">
+                        <div class="alt-method-title">SMS Report</div>
+                        <div class="alt-method-subtitle">Send to 32543 (FREE)</div>
+                    </div>
+                </a>
+                
+                <a href="https://wa.me/2348189999999" class="alt-method">
+                    <div class="alt-method-icon">📱</div>
+                    <div class="alt-method-content">
+                        <div class="alt-method-title">WhatsApp</div>
+                        <div class="alt-method-subtitle">+234 818 MED TRACK</div>
+                    </div>
+                </a>
+                
+                <a href="tel:*899*43#" class="alt-method">
+                    <div class="alt-method-icon">📟</div>
+                    <div class="alt-method-content">
+                        <div class="alt-method-title">USSD Code</div>
+                        <div class="alt-method-subtitle">Dial *899*HEALTH#</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form state management
+        let formData = {
+            disease: '',
+            state: '',
+            lga: '',
+            symptoms: [],
+            urgency: '',
+            description: '',
+            phone: '',
+            photos: []
+        };
+
+        // Disease selection
+        document.querySelectorAll('.disease-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove previous selection
+                document.querySelectorAll('.disease-btn').forEach(b => b.classList.remove('selected'));
+                
+                // Add selection to clicked button
+                btn.classList.add('selected');
+                
+                // Update form data
+                formData.disease = btn.dataset.disease;
+                
+                // Add haptic feedback simulation
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                }, 100);
+                
+                validateForm();
+            });
+        });
+
+        // Symptom selection
+        document.querySelectorAll('.symptom-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const symptom = toggle.dataset.symptom;
+                
+                if (toggle.classList.contains('selected')) {
+                    // Remove selection
+                    toggle.classList.remove('selected');
+                    formData.symptoms = formData.symptoms.filter(s => s !== symptom);
+                } else {
+                    // Add selection
+                    toggle.classList.add('selected');
+                    formData.symptoms.push(symptom);
+                }
+                
+                // Add haptic feedback simulation
+                toggle.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    toggle.style.transform = '';
+                }, 100);
+                
+                validateForm();
+            });
+        });
+
+        // Urgency selection
+        document.querySelectorAll('.urgency-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove previous selection
+                document.querySelectorAll('.urgency-option').forEach(o => o.classList.remove('selected'));
+                
+                // Add selection
+                option.classList.add('selected');
+                
+                // Update form data
+                formData.urgency = option.dataset.urgency;
+                
+                // Add urgency-based visual feedback
+                if (formData.urgency === 'high') {
+                    option.style.transform = 'scale(1.02)';
+                    setTimeout(() => option.style.transform = '', 200);
+                }
+                
+                validateForm();
+            });
+        });
+
+        // State selection handler
+        document.getElementById('state').addEventListener('change', (e) => {
+            formData.state = e.target.value;
+            validateForm();
+        });
+
+        // LGA input handler
+        document.getElementById('lga').addEventListener('input', (e) => {
+            formData.lga = e.target.value;
+            validateForm();
+        });
+
+        // Description handler
+        document.getElementById('description').addEventListener('input', (e) => {
+            formData.description = e.target.value;
+            validateForm();
+        });
+
+        // Phone number handler with formatting
+        document.getElementById('phone').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            
+            // Format Nigerian phone number
+            if (value.startsWith('234')) {
+                value = '+' + value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6, 9) + ' ' + value.substring(9, 13);
+            } else if (value.startsWith('0')) {
+                value = '+234 ' + value.substring(1, 4) + ' ' + value.substring(4, 7) + ' ' + value.substring(7, 11);
+            }
+            
+            e.target.value = value;
+            formData.phone = value;
+            validateForm();
+        });
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadedFiles = document.getElementById('uploadedFiles');
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            handleFiles(files);
+        });
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+                    return;
+                }
+                
+                if (formData.photos.length >= 5) {
+                    alert('Maximum 5 photos allowed.');
+                    return;
+                }
+                
+                formData.photos.push(file);
+                displayUploadedFile(file);
+            });
+            
+            validateForm();
+        }
+
+        function displayUploadedFile(file) {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'uploaded-file';
+            fileDiv.innerHTML = `
+                <div class="file-info">
+                    <span>📷</span>
+                    <span>${file.name}</span>
+                    <span style="color: var(--gray-500); font-size: 0.8rem;">(${(file.size / 1024).toFixed(1)} KB)</span>
+                </div>
+                <span class="file-remove" data-filename="${file.name}">×</span>
+            `;
+            
+            uploadedFiles.appendChild(fileDiv);
+            
+            // Add remove functionality
+            fileDiv.querySelector('.file-remove').addEventListener('click', () => {
+                formData.photos = formData.photos.filter(f => f.name !== file.name);
+                fileDiv.remove();
+                validateForm();
+            });
+        }
+
+        // Form validation
+        function validateForm() {
+            const submitBtn = document.getElementById('submitBtn');
+            const isValid = formData.disease && 
+                          formData.state && 
+                          formData.lga.trim() && 
+                          formData.symptoms.length > 0 && 
+                          formData.urgency && 
+                          formData.phone.trim();
+            
+            submitBtn.disabled = !isValid;
+            
+            if (isValid) {
+                submitBtn.style.background = 'linear-gradient(135deg, var(--primary-green), var(--dark-green))';
+            } else {
+                submitBtn.style.background = 'var(--gray-400)';
+            }
+        }
+
+        // Form submission
+        document.getElementById('outbreakForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Submitting Report...';
+            submitBtn.disabled = true;
+            
+            // Simulate submission delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Show success message
+            showSubmissionSuccess();
+        });
+
+        function showSubmissionSuccess() {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">✅</div>
+                    <h2 style="color: var(--primary-green); margin-bottom: 15px;">Report Submitted Successfully!</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 1.1rem;">
+                        Thank you for protecting your community. Your report has been sent to:
+                    </p>
+                    <div style="background: var(--light-green); padding: 20px; border-radius: 12px; margin: 20px 0;">
+                        <div style="color: var(--dark-green); font-weight: 600;">📍 ${getStateName(formData.state)} Health Authority</div>
+                        <div style="color: var(--dark-green); font-weight: 600;">🏥 NCDC Emergency Response</div>
+                        <div style="color: var(--dark-green); font-weight: 600;">🌍 WHO Nigeria Office</div>
+                    </div>
+                    <div style="background: var(--yellow-100); padding: 15px; border-radius: 12px; margin: 20px 0;">
+                        <strong style="color: var(--orange-500);">📱 Keep your phone on</strong><br>
+                        <span style="color: var(--gray-700);">Health authorities may call you within 1-4 hours for follow-up questions.</span>
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <button onclick="location.reload()" style="
+                            padding: 15px 30px;
+                            background: var(--primary-green);
+                            color: white;
+                            border: none;
+                            border-radius: 12px;
+                            font-weight: 600;
+                            font-size: 1rem;
+                            cursor: pointer;
+                            margin-right: 15px;
+                        ">Report Another Outbreak</button>
+                        <a href="#dashboard" style="
+                            padding: 15px 30px;
+                            background: var(--gray-100);
+                            color: var(--gray-700);
+                            border: none;
+                            border-radius: 12px;
+                            font-weight: 600;
+                            font-size: 1rem;
+                            text-decoration: none;
+                        ">View Dashboard</a>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Helper function to get state name
+        function getStateName(stateCode) {
+            const stateNames = {
+                'abia': 'Abia',
+                'adamawa': 'Adamawa',
+                'akwa-ibom': 'Akwa Ibom',
+                'anambra': 'Anambra',
+                'bauchi': 'Bauchi',
+                'bayelsa': 'Bayelsa',
+                'benue': 'Benue',
+                'borno': 'Borno',
+                'cross-river': 'Cross River',
+                'delta': 'Delta',
+                'ebonyi': 'Ebonyi',
+                'edo': 'Edo',
+                'ekiti': 'Ekiti',
+                'enugu': 'Enugu',
+                'fct': 'FCT (Abuja)',
+                'gombe': 'Gombe',
+                'imo': 'Imo',
+                'jigawa': 'Jigawa',
+                'kaduna': 'Kaduna',
+                'kano': 'Kano',
+                'katsina': 'Katsina',
+                'kebbi': 'Kebbi',
+                'kogi': 'Kogi',
+                'kwara': 'Kwara',
+                'lagos': 'Lagos',
+                'nasarawa': 'Nasarawa',
+                'niger': 'Niger',
+                'ogun': 'Ogun',
+                'ondo': 'Ondo',
+                'osun': 'Osun',
+                'oyo': 'Oyo',
+                'plateau': 'Plateau',
+                'rivers': 'Rivers',
+                'sokoto': 'Sokoto',
+                'taraba': 'Taraba',
+                'yobe': 'Yobe',
+                'zamfara': 'Zamfara'
+            };
+            return stateNames[stateCode] || stateCode;
+        }
+
+        // Auto-save form data to prevent loss
+        function autoSave() {
+            localStorage.setItem('meditrack_report_draft', JSON.stringify(formData));
+        }
+
+        // Load saved form data
+        function loadSavedData() {
+            const saved = localStorage.getItem('meditrack_report_draft');
+            if (saved) {
+                try {
+                    const savedData = JSON.parse(saved);
+                    
+                    // Restore disease selection
+                    if (savedData.disease) {
+                        const diseaseBtn = document.querySelector(`[data-disease="${savedData.disease}"]`);
+                        if (diseaseBtn) {
+                            diseaseBtn.classList.add('selected');
+                            formData.disease = savedData.disease;
+                        }
+                    }
+                    
+                    // Restore form fields
+                    if (savedData.state) {
+                        document.getElementById('state').value = savedData.state;
+                        formData.state = savedData.state;
+                    }
+                    
+                    if (savedData.lga) {
+                        document.getElementById('lga').value = savedData.lga;
+                        formData.lga = savedData.lga;
+                    }
+                    
+                    if (savedData.phone) {
+                        document.getElementById('phone').value = savedData.phone;
+                        formData.phone = savedData.phone;
+                    }
+                    
+                    if (savedData.description) {
+                        document.getElementById('description').value = savedData.description;
+                        formData.description = savedData.description;
+                    }
+                    
+                    // Restore symptoms
+                    if (savedData.symptoms) {
+                        savedData.symptoms.forEach(symptom => {
+                            const toggle = document.querySelector(`[data-symptom="${symptom}"]`);
+                            if (toggle) {
+                                toggle.classList.add('selected');
+                            }
+                        });
+                        formData.symptoms = savedData.symptoms || [];
+                    }
+                    
+                    // Restore urgency
+                    if (savedData.urgency) {
+                        const urgencyOption = document.querySelector(`[data-urgency="${savedData.urgency}"]`);
+                        if (urgencyOption) {
+                            urgencyOption.classList.add('selected');
+                            formData.urgency = savedData.urgency;
+                        }
+                    }
+                    
+                    validateForm();
+                } catch (e) {
+                    console.log('Error loading saved data:', e);
+                }
+            }
+        }
+
+        // Auto-save every 5 seconds
+        setInterval(autoSave, 5000);
+
+        // Clear saved data on successful submission
+        function clearSavedData() {
+            localStorage.removeItem('meditrack_report_draft');
+        }
+
+        // Load saved data on page load
+        window.addEventListener('load', loadSavedData);
+
+        // Add visual feedback for touch interactions
+        document.querySelectorAll('.disease-btn, .symptom-toggle, .urgency-option').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // Initialize form validation
+        validateForm();
+
+        // Emergency contact quick access
+        document.querySelectorAll('.hotline-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const phoneText = item.textContent;
+                const phoneMatch = phoneText.match(/[\d\-+()]+/);
+                if (phoneMatch) {
+                    window.location.href = `tel:${phoneMatch[0]}`;
+                }
+            });
+        });
+
+        // Accessibility improvements
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const focused = document.activeElement;
+                if (focused.classList.contains('disease-btn') || 
+                    focused.classList.contains('symptom-toggle') || 
+                    focused.classList.contains('urgency-option')) {
+                    e.preventDefault();
+                    focused.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
